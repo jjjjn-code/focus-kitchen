@@ -14,7 +14,7 @@ import {
   saveSession,
   saveSettings,
 } from './storage';
-import { DEFAULT_SETTINGS, type Activity, type Session, type Settings } from './types';
+import { DEFAULT_ACTIVITY, DEFAULT_SETTINGS, type Session, type Settings } from './types';
 
 type View =
   | { name: 'loading' }
@@ -77,13 +77,13 @@ export default function App() {
     };
   }, []);
 
-  const start = (activity: Activity, targetMin: number) => {
+  const start = (targetMin: number) => {
     // Ask for the wake lock inside the tap, while the browser still allows it.
     void keepAwake();
-    const next = { ...settings, lastActivity: activity, lastTargetMin: targetMin };
+    const next = { ...settings, lastTargetMin: targetMin };
     setSettings(next);
     void saveSettings(next);
-    const session = startSession({ id: crypto.randomUUID(), activity, targetMin, now: Date.now() });
+    const session = startSession({ id: crypto.randomUUID(), activity: DEFAULT_ACTIVITY, targetMin, now: Date.now() });
     saveActiveSession(session);
     setView({ name: 'cooking', session });
   };

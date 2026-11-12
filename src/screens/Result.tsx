@@ -1,6 +1,6 @@
 import { dishById, dishNameInSentence } from '../data/dishes';
 import { tierName } from '../engine/tiers';
-import { ACTIVITIES, type Session } from '../types';
+import type { Session } from '../types';
 
 interface Props {
   session: Session;
@@ -15,7 +15,6 @@ function minutes(n: number): string {
 export default function Result({ session, onDone }: Props) {
   const dish = dishById(session.dishId ?? '');
   const focused = session.focusedMin ?? 0;
-  const activity = ACTIVITIES.find((a) => a.id === session.activity)?.label.toLowerCase() ?? '';
   if (!dish) return null;
   const name = dishNameInSentence(dish);
 
@@ -28,10 +27,9 @@ export default function Result({ session, onDone }: Props) {
               {tierName(dish.tier)} · {dish.rarity}
             </p>
             <h1>{dish.name}</h1>
-            <p>{dish.blurb}</p>
             <p className="muted">
-              {minutes(focused)} of {activity}.
-              {session.leftKitchen && ' You left the kitchen, so it was served at the tier you had reached.'}
+              {minutes(focused)} of focus.
+              {session.leftKitchen && ' Served when you left the kitchen.'}
             </p>
           </>
         )}
@@ -40,7 +38,7 @@ export default function Result({ session, onDone }: Props) {
             <p className="result__eyebrow">Raw</p>
             <h1>Your {name} came out raw.</h1>
             <p className="muted">
-              You focused for {minutes(focused)} of your {session.targetMin}. Next time, let it cook.
+              {minutes(focused)} of {session.targetMin}.
             </p>
           </>
         )}
@@ -49,9 +47,7 @@ export default function Result({ session, onDone }: Props) {
             <p className="result__eyebrow">Burnt</p>
             <h1>You left the kitchen.</h1>
             <p>Your {name} burnt.</p>
-            <p className="muted">
-              You focused for {minutes(focused)} before it went wrong. The stove is ready when you are.
-            </p>
+            <p className="muted">{minutes(focused)} of focus before you left.</p>
           </>
         )}
       </div>

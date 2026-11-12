@@ -26,13 +26,26 @@ interface Props {
   onEnd: (session: Session) => void;
 }
 
-function formatElapsed(ms: number): string {
-  const totalSeconds = Math.floor(ms / 1000);
+function formatClock(ms: number): string {
+  const totalSeconds = Math.max(0, Math.round(ms / 1000));
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
   const s = totalSeconds % 60;
   const pad = (n: number) => String(n).padStart(2, '0');
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+}
+
+/** Match the iOS status bar to the screen colour while cooking. */
+function useThemeColour(colour: string) {
+  useEffect(() => {
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (!meta) return;
+    const before = meta.content;
+    meta.content = colour;
+    return () => {
+      meta.content = before;
+    };
+  }, [colour]);
 }
 
 export default function Cooking({ session: initial, graceSeconds, roll, onEnd }: Props) {
@@ -116,13 +129,16 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
   const progress = Math.min(1, elapsed / (session.targetMin * 60_000));
   const tier = tierFor(Math.floor(elapsed / 60_000));
   const toNext = minutesToNextTier(elapsed);
-  const remainingMin = Math.ceil((session.targetMin * 60_000 - elapsed) / 60_000);
+  const remaining = session.targetMin * 60_000 - elapsed;
+
+  useThemeColour(reached ? '#F2A93B' : '#EE7B3C');
 
   const finish = () => end(finishByButton(sessionRef.current, Date.now(), latest.current.roll));
 
   return (
     <main className={`cooking${reached ? ' is-cooked' : ''}`}>
       <div className="cooking__stage">
+        <div className="cooking__sun" aria-hidden="true" />
         <svg className="ring" viewBox="0 0 300 300" aria-hidden="true">
           <circle className="ring__track" cx="150" cy="150" r={RING_RADIUS} />
           <circle
@@ -143,7 +159,9 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
           <div className="pot__lid">
             <div className="pot__knob" />
           </div>
-          <div className="pot__body" />
+          <div className="pot__body">
+            <div className="pot__face" />
+          </div>
           <div className="pot__flame">
             <span />
             <span />
@@ -152,8 +170,9 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
         </div>
       </div>
 
-      <p className="cooking__time" role="timer" aria-label="Time focused">
-        {formatElapsed(elapsed)}
+      {/* Counts down to the target, then counts up through overtime. */}
+      <p className="cooking__time" role="timer" aria-label={reached ? 'Time focused' : 'Time left'}>
+        {formatClock(reached ? elapsed : remaining)}
       </p>
 
       <div className="cooking__status" aria-live="polite">
@@ -165,12 +184,8 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
               {toNext === null ? 'Top tier reached' : `Next tier in ${toNext} min`}
             </p>
           </>
-        ) : warning ? (
-          <p className="cooking__hint">Your dish is not ready yet. Stop now and it comes out raw?</p>
         ) : (
-          <p className="cooking__hint">
-            {remainingMin} min to go. Phone face down.
-          </p>
+          warning && <p className="cooking__hint">Your dish is not ready yet. Stop now and it comes out raw?</p>
         )}
         {awake !== 'pending' && awake !== 'native' && (
           <p className="cooking__tip">Set Auto-Lock to Never while cooking</p>

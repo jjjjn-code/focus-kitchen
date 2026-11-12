@@ -6,7 +6,10 @@
   --line: #eadfce;
   --accent: #e8793a;
   --accent-dark: #c95f2a;
-  --night: #0b0b0c;
+  --cook: #ee7b3c;
+  --cook-done: #f2a93b;
+  --cook-ink: #5b2410;
+  --cook-cream: #fff6e6;
   font-family: 'Nunito Variable', ui-rounded, system-ui, sans-serif;
   color: var(--ink);
   background: var(--cream);
@@ -31,7 +34,11 @@ body {
 }
 
 body:has(.cooking) {
-  background: var(--night);
+  background: var(--cook);
+}
+
+body:has(.cooking.is-cooked) {
+  background: var(--cook-done);
 }
 
 h1 {
@@ -96,16 +103,29 @@ button {
   text-align: center;
 }
 
-.logo {
-  width: 144px;
-  height: 144px;
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.link {
+.logo {
+  width: 220px;
+  height: 220px;
+}
+
+.back {
   align-self: flex-start;
-  padding: 8px 0;
-  font-weight: 700;
-  color: var(--accent-dark);
+  width: 44px;
+  height: 44px;
+  margin-left: -10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink-soft);
 }
 
 /* Buttons and chips */
@@ -181,11 +201,12 @@ button {
 /* Target time slider */
 
 .target {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-}
-
-.target h2 {
-  text-align: left;
+  padding-bottom: 24px;
 }
 
 .target__readout {
@@ -196,19 +217,15 @@ button {
 }
 
 .target__readout strong {
-  font-size: 3rem;
+  font-size: 5.5rem;
   font-weight: 800;
   line-height: 1.1;
   color: var(--ink);
 }
 
-.target__hint {
-  font-size: 0.95rem;
-}
-
 .scrubber {
   position: relative;
-  margin: 4px -20px 16px;
+  margin: 12px -20px 28px;
 }
 
 .scrubber__scroller {
@@ -323,7 +340,7 @@ button {
   color: var(--ink-soft);
 }
 
-/* Cooking screen: near-black, dim, calm */
+/* Cooking screen: warm and calm, one big number */
 
 .cooking {
   min-height: 100%;
@@ -331,22 +348,39 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 10px;
   text-align: center;
-  background: var(--night);
-  color: #8d8277;
+  background: var(--cook);
+  color: var(--cook-cream);
   padding: calc(24px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));
+  transition: background-color 1.2s ease;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
 
+.cooking.is-cooked {
+  background: var(--cook-done);
+}
+
 .cooking__stage {
   position: relative;
-  width: min(300px, 78vw);
+  width: min(280px, 72vw);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
+}
+
+.cooking__sun {
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  background: #ffd166;
+  animation: breathe 6s ease-in-out infinite;
+}
+
+.is-cooked .cooking__sun {
+  background: #ffe29a;
 }
 
 .ring {
@@ -359,50 +393,50 @@ button {
 
 .ring circle {
   fill: none;
-  stroke-width: 3;
+  stroke-width: 6;
 }
 
 .ring__track {
-  stroke: #1c1a19;
+  stroke: rgba(255, 246, 230, 0.28);
 }
 
 .ring__bar {
-  stroke: #8a4a26;
+  stroke: var(--cook-cream);
   stroke-linecap: round;
   transition: stroke-dashoffset 1s linear;
 }
 
-.is-cooked .ring__bar {
-  stroke: #d9813f;
-}
-
 .cooking__time {
-  font-size: 0.95rem;
+  margin-top: 14px;
+  font-size: clamp(4.2rem, 21vw, 5.6rem);
+  font-weight: 800;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-  color: #5d554e;
+  letter-spacing: -0.01em;
 }
 
 .cooking__status {
-  min-height: 76px;
+  min-height: 64px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 6px;
   max-width: 300px;
+  color: var(--cook-ink);
 }
 
 .cooking__headline {
-  color: #e0a877;
   font-weight: 800;
 }
 
 .cooking__hint {
   font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .cooking__tip {
   font-size: 0.8rem;
-  color: #5d554e;
+  opacity: 0.75;
 }
 
 .tier-badge {
@@ -410,36 +444,39 @@ button {
   margin-right: 8px;
   padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid #5a3a26;
-  color: #d9a070;
+  background: var(--cook-ink);
+  color: var(--cook-cream);
   font-size: 0.8rem;
   font-weight: 800;
 }
 
 .cooking__actions {
   min-height: 60px;
+  margin-top: 6px;
 }
 
 .button--serve {
-  background: #d9813f;
-  color: #1a0f08;
-  min-width: 200px;
+  background: var(--cook-cream);
+  color: var(--accent-dark);
+  min-width: 220px;
+  min-height: 60px;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 0 rgba(91, 36, 16, 0.25);
 }
 
 .button--hold {
   position: relative;
   overflow: hidden;
   min-width: 200px;
-  border: 1px solid #2c2826;
-  color: #7d736a;
-  background: #141312;
+  color: var(--cook-cream);
+  background: rgba(91, 36, 16, 0.22);
   touch-action: none;
 }
 
 .button--hold__fill {
   position: absolute;
   inset: 0;
-  background: #5a2a1c;
+  background: var(--cook-ink);
   transform: scaleX(0);
   transform-origin: left;
 }
@@ -459,6 +496,7 @@ button {
   position: relative;
   width: 150px;
   height: 150px;
+  animation: simmer 2.6s ease-in-out infinite;
 }
 
 .pot__body {
@@ -466,9 +504,9 @@ button {
   left: 15px;
   right: 15px;
   top: 62px;
-  height: 62px;
-  border-radius: 8px 8px 34px 34px;
-  background: linear-gradient(#3a302b, #241e1b);
+  height: 64px;
+  border-radius: 8px 8px 36px 36px;
+  background: #d9552b;
 }
 
 .pot__body::before,
@@ -476,28 +514,54 @@ button {
   content: '';
   position: absolute;
   top: 8px;
-  width: 20px;
-  height: 12px;
-  border-radius: 6px;
-  background: #2d2521;
+  width: 22px;
+  height: 13px;
+  border-radius: 7px;
+  background: #b8421f;
 }
 
 .pot__body::before {
-  left: -16px;
+  left: -17px;
 }
 
 .pot__body::after {
-  right: -16px;
+  right: -17px;
+}
+
+/* Two eyes and a small smile */
+.pot__face {
+  position: absolute;
+  left: 50%;
+  top: 22px;
+  width: 44px;
+  height: 20px;
+  margin-left: -22px;
+  background:
+    radial-gradient(circle at 5px 5px, var(--cook-ink) 4.5px, transparent 5px),
+    radial-gradient(circle at 39px 5px, var(--cook-ink) 4.5px, transparent 5px);
+}
+
+.pot__face::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  width: 14px;
+  height: 8px;
+  margin-left: -7px;
+  border: 3px solid var(--cook-ink);
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
 }
 
 .pot__lid {
   position: absolute;
   left: 9px;
   right: 9px;
-  top: 46px;
-  height: 16px;
+  top: 45px;
+  height: 17px;
   border-radius: 10px;
-  background: #4a3d36;
+  background: #f4a261;
   transform-origin: 20% 100%;
   animation: lid 2.6s ease-in-out infinite;
 }
@@ -506,29 +570,29 @@ button {
   position: absolute;
   left: 50%;
   top: -11px;
-  width: 22px;
-  height: 13px;
-  margin-left: -11px;
-  border-radius: 7px 7px 3px 3px;
-  background: #3a302b;
+  width: 24px;
+  height: 14px;
+  margin-left: -12px;
+  border-radius: 8px 8px 3px 3px;
+  background: #b8421f;
 }
 
 .pot__steam {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
+  top: -6px;
   height: 34px;
   display: flex;
   justify-content: center;
-  gap: 18px;
+  gap: 16px;
 }
 
 .pot__steam span {
-  width: 5px;
-  height: 22px;
-  border-radius: 3px;
-  background: #3b3633;
+  width: 7px;
+  height: 24px;
+  border-radius: 4px;
+  background: #fff;
   opacity: 0;
   animation: steam 3.2s ease-out infinite;
 }
@@ -545,24 +609,23 @@ button {
   position: absolute;
   left: 0;
   right: 0;
-  top: 128px;
+  top: 130px;
   display: flex;
   justify-content: center;
   gap: 7px;
-  filter: drop-shadow(0 0 14px rgba(232, 121, 58, 0.45));
 }
 
 .pot__flame span {
-  width: 13px;
-  height: 17px;
+  width: 14px;
+  height: 18px;
   border-radius: 50% 50% 50% 50% / 68% 68% 32% 32%;
-  background: linear-gradient(#b8521f, #e59a4c);
+  background: linear-gradient(#ffb703, #e63946);
   transform-origin: 50% 100%;
-  animation: flame 1.3s ease-in-out infinite alternate;
+  animation: flame 0.9s ease-in-out infinite alternate;
 }
 
 .pot__flame span:nth-child(2) {
-  height: 21px;
+  height: 23px;
   animation-delay: 0.3s;
 }
 
@@ -570,58 +633,84 @@ button {
   animation-delay: 0.6s;
 }
 
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.96);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes simmer {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
 @keyframes lid {
   0%,
-  70%,
+  60%,
   100% {
     transform: rotate(0);
   }
-  78% {
-    transform: rotate(-3deg) translateY(-2px);
+  70% {
+    transform: rotate(-7deg) translateY(-4px);
   }
-  86% {
+  80% {
     transform: rotate(0);
   }
-  92% {
-    transform: rotate(-1.5deg) translateY(-1px);
+  88% {
+    transform: rotate(-4deg) translateY(-2px);
+  }
+  94% {
+    transform: rotate(0);
   }
 }
 
 @keyframes steam {
   0% {
     opacity: 0;
-    transform: translateY(14px) scaleY(0.6);
+    transform: translateY(16px) scaleY(0.6);
   }
   40% {
-    opacity: 0.9;
+    opacity: 0.85;
   }
   100% {
     opacity: 0;
-    transform: translateY(-12px) scaleY(1.1);
+    transform: translateY(-16px) scaleY(1.15);
   }
 }
 
 @keyframes flame {
   from {
-    transform: scaleY(0.85);
+    transform: scaleY(0.8);
   }
   to {
-    transform: scaleY(1.12);
+    transform: scaleY(1.15);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .pot,
   .pot__lid,
   .pot__flame span,
-  .pot__steam span {
+  .pot__steam span,
+  .cooking__sun {
     animation: none;
   }
 
   .pot__steam span {
-    opacity: 0.6;
+    opacity: 0.7;
   }
 
-  .ring__bar {
+  .ring__bar,
+  .cooking {
     transition: none;
   }
 }

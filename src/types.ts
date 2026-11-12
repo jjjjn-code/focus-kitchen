@@ -34,7 +34,6 @@ export interface Settings {
   sound: boolean;
   notifyExperiment: boolean;
   lastTargetMin: number;
-  lastActivity: Activity;
 }
 
 export interface Dish {
@@ -52,7 +51,6 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: false,
   notifyExperiment: false,
   lastTargetMin: 15,
-  lastActivity: 'reading',
 };
 
 /** The target time slider: 10 minutes is the least that can produce a cooked dish. */
@@ -62,10 +60,5 @@ export const TARGET_STEP_MIN = 5;
 /** Popular targets offered as buttons under the slider. */
 export const TARGET_PRESETS = [10, 15, 30, 45, 60] as const;
 
-export const ACTIVITIES: { id: Activity; label: string }[] = [
-  { id: 'reading', label: 'Reading' },
-  { id: 'study', label: 'Study' },
-  { id: 'work', label: 'Work' },
-  { id: 'creative', label: 'Creative' },
-  { id: 'other', label: 'Other' },
-];
+/** There is no activity picker for now, so every session is recorded with this activity. */
+export const DEFAULT_ACTIVITY: Activity = 'reading';

@@ -13,7 +13,7 @@ Owner: Jane. Version 1 (the MVP) is for Jane only. No App Store, no accounts, no
 
 1. **Platform:** a Progressive Web App (PWA) installed on Jane's iPhone via Safari "Add to Home Screen". Hosted free on GitHub Pages. A native app (Expo or SwiftUI) is stage 2, only if the MVP proves the idea works.
 2. **Art style:** cute stylised 3D "clay" food renders (chosen over a Japanese magazine gouache style). See `docs/ART_GUIDE.md`.
-3. **Activities:** works for any focus activity, not only reading. Reading is the main use case and the default.
+3. **Activities:** works for any focus activity, not only reading. Reading is the main use case and the default. There is no activity picker for now (Jane removed it to keep the set up screen simple); every session is recorded as reading.
 4. **Surprise reward:** the dish is revealed only at the end. Longer focus unlocks higher tiers.
 5. **Penalties:** quitting before the target gives a **raw** dish; leaving the app gives a **burnt** dish.
 6. **No break or "urge" button.** The aim is not to touch the phone at all.
@@ -26,6 +26,7 @@ Owner: Jane. Version 1 (the MVP) is for Jane only. No App Store, no accounts, no
 - Use British English everywhere, including in the app's copy.
 - Do not use en dashes or em dashes in writing or in UI copy.
 - Do not use contractions (write "do not", not "don't") in writing or UI copy.
+- Each screen has one dominant thing and very few words. Headspace is the reference for this.
 - Jane wants to plan before building. Check in before large design changes; small implementation choices are fine to make alone.
 
 ## Tech summary

@@ -42,7 +42,6 @@ A slider from 10 to 180 minutes in 5 minute steps, with preset buttons underneat
 A web app cannot tell the difference between locking the screen and switching apps. The v1 approach:
 
 - Keep the screen awake with the **Screen Wake Lock API** (`navigator.wakeLock.request('screen')`). Re-request it whenever the page becomes visible again. If it is not available or fails, fall back to a silent looping video technique (as used by the NoSleep.js library) and show a one-line tip: "Set Auto-Lock to Never while cooking".
-- The cooking screen is near-black so it uses little battery on an OLED screen.
 - Jane puts the phone **face down without locking it**.
 - On `visibilitychange` to hidden: immediately write `hiddenAt` to storage.
 - On visible again: if `now - hiddenAt <= graceSeconds` (default **10**), continue and count a "close call". Otherwise end the session as **burnt**, with the end time set to `hiddenAt`.
@@ -112,8 +111,8 @@ Store the menu as `src/data/dishes.ts` with `{ id, name, tier, rarity, blurb }`.
 ## 5. Screens
 
 1. **Kitchen (home)**: big Start cooking button, today's focus minutes, current streak (days with at least one cooked dish), last dish cooked.
-2. **Set up**: activity chips (Reading, Study, Work, Creative, Other), goal picker (optional, with "New goal"), target time picker, Start button.
-3. **Cooking**: near-black background; a 3D-style pot with a lid that gently bubbles, soft steam and a low flame (CSS or Lottie animation, no dish visible). Elapsed time in small, dim text. A thin progress ring to the target. After the target: "Cooked! Keep going to upgrade" and the next-tier hint. Hold-to-stop button, or Serve after the target.
+2. **Set up**: only the target time, in the middle of the screen (big number, slider, preset buttons), and a Start button. No activity picker (removed at Jane's request; sessions are recorded as reading). The goal picker is still to be designed for M4.
+3. **Cooking**: warm orange background (changed from near-black at Jane's request); an animated pot with a lid that bubbles, steam and a flame (no dish visible). One big number: a countdown to the target, then the time focused counting up. A progress ring to the target. After the target: "Cooked! Keep going to upgrade" and the next-tier hint. Hold-to-stop button, or Serve after the target.
 4. **Reveal**: lid lifts, dish appears with a gentle bounce, name, rarity badge, "New!" badge for a first-time dish. Below: minutes focused, activity and goal, this week's total, and one message (see section 7). Buttons: "Add to recipe book" (default) and an optional "Add a note" (for example, a favourite line from the book).
 5. **Failure**: the raw or burnt dish image (with a sad face, see the art guide), one gentle line, time focused before it went wrong. No shaming.
 6. **Recipe book**: grid grouped by tier. Uncooked dishes show as a dark silhouette of the dish image (CSS `filter: brightness(0)` with low opacity), so no extra art is needed. Cooked dishes show the image and a "x3" count. Tapping opens a **dish card**: image, blurb, every time it was cooked (date, minutes, activity, goal, note).
@@ -189,7 +188,8 @@ Store messages in `src/data/messages.ts`. Start with stat templates only if veri
 ## 8. Look and feel
 
 - Warm, cosy and playful outside the cooking screen: cream background (around `#FAF6EE`), soft rounded cards, warm accent colours taken from the food art.
-- Cooking screen: near-black (`#0B0B0C`), dim warm glow from the flame.
+- Cooking screen: warm orange (`#EE7B3C`), turning golden (`#F2A93B`) once the dish is cooked.
+- One dominant thing per screen and very few words, in the spirit of Headspace.
 - Rounded, friendly typeface (for example "Nunito" or "Quicksand" from Google Fonts, self-hosted for offline use).
 - Gentle animations only. Respect `prefers-reduced-motion`.
 - Designed for iPhone portrait; respect safe areas (`env(safe-area-inset-*)`).
