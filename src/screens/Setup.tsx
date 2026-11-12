@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { tierFor, tierName } from '../engine/tiers';
-import { ACTIVITIES, MAX_TARGET_MIN, MIN_TARGET_MIN, TARGET_PRESETS, TARGET_STEP_MIN, type Activity, type Settings } from '../types';
+import { MAX_TARGET_MIN, MIN_TARGET_MIN, TARGET_PRESETS, TARGET_STEP_MIN, type Settings } from '../types';
 import TimeScrubber from './TimeScrubber';
 
 interface Props {
   settings: Settings;
   onBack: () => void;
-  onStart: (activity: Activity, targetMin: number) => void;
+  onStart: (targetMin: number) => void;
 }
 
 function presetLabel(min: number): string {
@@ -21,37 +20,19 @@ function clampTarget(min: number): number {
 }
 
 export default function Setup({ settings, onBack, onStart }: Props) {
-  const [activity, setActivity] = useState<Activity>(settings.lastActivity);
   const [targetMin, setTargetMin] = useState(() => clampTarget(settings.lastTargetMin));
-  const tier = tierFor(targetMin);
   const hours = Math.floor(targetMin / 60);
   const mins = targetMin % 60;
 
   return (
     <main className="page">
-      <button className="link" onClick={onBack}>
-        Back
+      <button className="back" onClick={onBack} aria-label="Back">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </button>
 
-      <section>
-        <h2 id="activity-label">Activity</h2>
-        <div className="chips" role="radiogroup" aria-labelledby="activity-label">
-          {ACTIVITIES.map((a) => (
-            <button
-              key={a.id}
-              role="radio"
-              aria-checked={activity === a.id}
-              className="chip"
-              onClick={() => setActivity(a.id)}
-            >
-              {a.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
       <section className="target">
-        <h2>Target time</h2>
         <p className="target__readout" data-testid="target-readout">
           {hours > 0 && (
             <>
@@ -83,19 +64,11 @@ export default function Setup({ settings, onBack, onStart }: Props) {
             </button>
           ))}
         </div>
-        {tier && (
-          <p className="muted target__hint">
-            Reach the target to cook a {tierName(tier).toLowerCase()}. Keep going and it upgrades.
-          </p>
-        )}
       </section>
 
-      <div className="page__footer">
-        <p className="muted">Put your phone face down without locking it. Leaving the app burns the dish.</p>
-        <button className="button button--primary button--big" onClick={() => onStart(activity, targetMin)}>
-          Start
-        </button>
-      </div>
+      <button className="button button--primary button--big" onClick={() => onStart(targetMin)}>
+        Start
+      </button>
     </main>
   );
 }

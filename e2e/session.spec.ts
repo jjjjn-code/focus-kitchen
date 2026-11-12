@@ -19,16 +19,19 @@ async function setVisibility(page: Page, state: 'hidden' | 'visible') {
 
 test('reaching the target and serving gives a cooked dish', async ({ page }) => {
   await startCooking(page);
-  await page.clock.fastForward('10:00');
+  await page.clock.fastForward('04:00');
+  await expect(page.getByRole('timer', { name: 'Time left' })).toHaveText('06:00');
+  await page.clock.fastForward('06:00');
+  await expect(page.getByRole('timer', { name: 'Time focused' })).toHaveText('10:00');
   await expect(page.getByText('Cooked! Keep going to upgrade')).toBeVisible();
   await expect(page.getByText('Next tier in 15 min')).toBeVisible();
 
   await page.getByRole('button', { name: 'Serve' }).click();
   await expect(page.getByText(/Snack · (common|rare|legendary)/i)).toBeVisible();
-  await expect(page.getByText('10 minutes of reading.')).toBeVisible();
+  await expect(page.getByText('10 minutes of focus.')).toBeVisible();
 
   await page.getByRole('button', { name: 'Back to the kitchen' }).click();
-  await expect(page.getByText('Dishes cooked so far: 1')).toBeVisible();
+  await expect(page.getByText('1 dish cooked')).toBeVisible();
 });
 
 test('overtime upgrades the tier', async ({ page }) => {
@@ -54,7 +57,7 @@ test('holding stop before the target gives a raw dish', async ({ page }) => {
   await stop.dispatchEvent('pointerdown');
   await page.clock.fastForward(1600);
   await expect(page.getByRole('heading', { name: /came out raw\.$/ })).toBeVisible();
-  await expect(page.getByText('You focused for 3 minutes of your 10.')).toBeVisible();
+  await expect(page.getByText('3 minutes of 10.')).toBeVisible();
 });
 
 test('a short absence within the grace period carries on cooking', async ({ page }) => {
@@ -74,7 +77,7 @@ test('being away longer than the grace period burns the dish', async ({ page }) 
   await setVisibility(page, 'visible');
   await expect(page.getByRole('heading', { name: 'You left the kitchen.' })).toBeVisible();
   await expect(page.getByText(/burnt\.$/)).toBeVisible();
-  await expect(page.getByText('You focused for 4 minutes before it went wrong.')).toBeVisible();
+  await expect(page.getByText('4 minutes of focus before you left.')).toBeVisible();
 });
 
 test('closing the app mid-session and reopening later burns the dish', async ({ page }) => {
@@ -85,7 +88,7 @@ test('closing the app mid-session and reopening later burns the dish', async ({ 
   await page.clock.fastForward('30:00');
   await page.goto('./');
   await expect(page.getByRole('heading', { name: 'You left the kitchen.' })).toBeVisible();
-  await expect(page.getByText('You focused for 2 minutes before it went wrong.')).toBeVisible();
+  await expect(page.getByText('2 minutes of focus before you left.')).toBeVisible();
 });
 
 test('reopening the app within the grace period carries on cooking', async ({ page }) => {

@@ -6,13 +6,12 @@ interface Props {
 export default function Kitchen({ dishesCooked, onStart }: Props) {
   return (
     <main className="page page--centre">
-      <img className="logo" src={`${import.meta.env.BASE_URL}icon.svg`} alt="" />
-      <h1>Focus Kitchen</h1>
-      <p className="muted">
-        {dishesCooked === 0
-          ? 'Nothing cooked yet. Your first dish is waiting.'
-          : `Dishes cooked so far: ${dishesCooked}`}
-      </p>
+      <div className="hero">
+        <img className="logo" src={`${import.meta.env.BASE_URL}icon.svg`} alt="Focus Kitchen" />
+        {dishesCooked > 0 && (
+          <p className="muted">{dishesCooked === 1 ? '1 dish cooked' : `${dishesCooked} dishes cooked`}</p>
+        )}
+      </div>
       <button className="button button--primary button--big" onClick={onStart}>
         Start cooking
       </button>
