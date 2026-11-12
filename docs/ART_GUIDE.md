@@ -4,14 +4,14 @@ How to create the dish illustrations so all of them look as if they belong to on
 
 ## 1. The chosen style
 
-Cute, stylised 3D food renders that look like miniature clay or soft plastic toys:
+Cute, stylised 3D food renders that look like handmade miniature clay models, photographed on a sand coloured paper backdrop (updated after Jane's clay figure references):
 
 - Rounded, simplified, slightly chunky shapes. Recognisable, but not photorealistic.
 - Soft matte materials with a gentle sheen on sauces, eggs and broth.
 - Soft diffused studio lighting from the upper left, with a gentle soft shadow under the dish.
 - Cream or warm off-white ceramic bowls and plates (sukiyaki uses a dark cast-iron pot). Keep tableware simple, with no patterns.
 - Three-quarter view from above (about 45 degrees), dish centred, filling about 80% of the frame.
-- Plain white background (to be removed afterwards; see section 5).
+- Plain warm beige (light sand) paper backdrop that fills the frame. The backdrop stays in the image; the app shows each picture as a rounded tile, so no background removal is needed.
 - No text, no logos, no hands, no chopsticks floating in the air, no extra props unless the dish needs them.
 
 Style anchor: the "3D / Omurice" frame in the Figma file https://www.figma.com/design/XJ9uISO5YPC32BH0ESBZfw. Compare every new image against it.
@@ -22,17 +22,18 @@ These templates produced the approved samples (Figma `generate_image`, model `gp
 
 ### Cooked
 
+This is the template that produced all 23 cooked images now in the app:
+
 ```
 Cute stylised 3D render of {DISH DESCRIPTION} {SERVING VESSEL}.
-Soft clay and matte plastic materials, rounded simplified chunky shapes,
-miniature toy-like food, soft diffused studio lighting, gentle soft shadow,
-high detail 3D icon style. Single dish centred, three-quarter view from above,
-isolated on a plain white background. No text, no lettering.
+Handmade modelling clay look with a soft matte surface and subtle hand-shaped
+texture, rounded simplified chunky shapes, miniature toy-like food, muted warm
+colours, soft diffused studio lighting from the upper left, gentle soft shadow,
+high detail 3D icon style. Single dish centred and filling about 70% of the
+frame, three-quarter view from above, on a plain seamless warm beige paper
+backdrop in a light sand colour that fills the whole frame evenly. No text, no
+lettering, no face, no hands, no extra props.
 ```
-
-`{DISH DESCRIPTION}` lists the 4 to 7 most recognisable ingredients, for example: "a bowl of Japanese shoyu ramen: brown broth, wavy noodles, two round slices of chashu pork, a halved soft-boiled egg with jammy orange yolk, a nori sheet, narutomaki fish cake, chopped spring onions".
-
-`{SERVING VESSEL}` is usually "in a cream ceramic bowl" or "on a round cream ceramic plate".
 
 ### Raw (quit early)
 
@@ -40,10 +41,12 @@ isolated on a plain white background. No text, no lettering.
 Cute stylised 3D render of {DISH NAME} that is still RAW and undercooked:
 {RAW DETAILS}, looks unfinished, with a small sad cartoon face (two dot eyes
 and a little frown) on the food, {SERVING VESSEL}.
-Soft clay and matte plastic materials, rounded simplified chunky shapes,
-miniature toy-like food, soft diffused studio lighting, gentle soft shadow,
+Handmade modelling clay look with a soft matte surface and subtle hand-shaped
+texture, rounded simplified chunky shapes, miniature toy-like food, muted warm
+colours, soft diffused studio lighting from the upper left, gentle soft shadow,
 3D icon style, gently humorous. Single dish centred, three-quarter view from
-above, isolated on a plain white background. No text, no lettering.
+above, on a plain seamless warm beige paper backdrop in a light sand colour that fills
+the whole frame evenly. No text, no lettering.
 ```
 
 `{RAW DETAILS}` makes rawness obvious at a glance: pale colours, uncooked noodles still in a block, pink meat, liquid egg, dough that has not risen, ingredients not yet combined.
@@ -54,11 +57,13 @@ above, isolated on a plain white background. No text, no lettering.
 Cute stylised 3D render of a BURNT {DISH NAME}: {BURNT DETAILS}, a few soft
 grey puffs of cartoon smoke rising, with a small sad cartoon face (two dot
 eyes and a little frown) on the food, {SERVING VESSEL}.
-Soft clay and matte plastic materials, rounded simplified chunky shapes,
-miniature toy-like food, soft diffused studio lighting, gentle soft shadow,
+Handmade modelling clay look with a soft matte surface and subtle hand-shaped
+texture, rounded simplified chunky shapes, miniature toy-like food, muted warm
+colours, soft diffused studio lighting from the upper left, gentle soft shadow,
 3D icon style, cute and gently humorous rather than gross. Single dish
-centred, three-quarter view from above, isolated on a plain white background.
-No text, no lettering.
+centred, three-quarter view from above, on a plain seamless warm beige paper
+backdrop in a light sand colour that fills the whole frame evenly. No text, no
+lettering.
 ```
 
 `{BURNT DETAILS}`: charred dark brown and black surfaces, blackened crispy edges, dried-up sauce.
@@ -71,34 +76,25 @@ No text, no lettering.
 
 ## 4. Assets needed for version 1
 
-20 dishes (see the menu in `SPEC.md` section 4.4) x 3 states = **60 images**.
+23 dishes (see the menu in `SPEC.md` section 4.4) x 3 states = **69 images**.
 
-Suggested order, so the app can ship with real art early:
-1. All 20 cooked images.
-2. Raw and burnt for tiers 1 to 3.
-3. Raw and burnt for tiers 4 and 5.
+Status:
+1. **Done:** all 23 cooked images.
+2. **To do:** raw and burnt images (46). Until one exists, the app shows the cooked image with a CSS treatment (raw: desaturated and pale; burnt: darkened) and a small sad face badge.
 
-Until a raw or burnt image exists, the app falls back to the cooked image with a CSS treatment (raw: desaturated and pale; burnt: darkened with a smoke overlay).
-
-Already generated (in Figma, may be reused if they pass the checklist): omurice (cooked, raw, burnt), shoyu ramen (cooked), sukiyaki (cooked). The raw omurice already has the sad face; the burnt omurice does not, so regenerate it with the burnt template.
-
-Cost note: each Figma generation uses one Figma AI credit on the "fresh workspace" team. Expect to regenerate about 1 in 3 images, so budget about 80 credits for the full set.
+Cost note: each Figma generation uses one Figma AI credit on the "fresh workspace" team. The 23 cooked images took 25 credits (the fried egg was generated twice while settling the backdrop). None of the others needed regenerating.
 
 ## 5. Processing
 
-1. **Generate** at 1024 x 1024 on a plain white background.
-2. **Remove the background** to get a transparent PNG. Options, in order of preference:
-   - Figma: select the image and use "Remove background", then export as PNG.
-   - Locally with the `rembg` Python package (`rembg i input.png output.png`). Its model downloads on first use, which may be blocked in a cloud session.
-   - If neither works: keep the white background and place images on white rounded cards in the UI.
-3. **Trim and centre**: make sure each dish sits centred with similar padding (about 8% on each side) so the grid looks even.
-4. **Export** as WebP:
-   - `public/dishes/512/{id}.webp`, `{id}-raw.webp`, `{id}-burnt.webp`
-   - `public/dishes/256/{id}.webp`, `{id}-raw.webp`, `{id}-burnt.webp`
-   - Use quality about 85. Keep the transparent background.
-5. **Silhouettes** for locked dishes are made in CSS from the cooked image. No separate files.
+1. **Generate** at 1024 x 1024 with Figma `generate_image` (model `gpt-image-2.5-flare`).
+2. **Record** the image link in `art-src/urls.txt` as `<name> <asset id>`, where `<name>` is the dish id, optionally followed by `-raw` or `-burnt`.
+3. **Download** with `scripts/fetch-art.sh`. Links expire after 7 days. The PNG originals in `art-src/` are not committed (they are about 1 MB each); only the converted files are.
+4. **Convert** with `python3 scripts/process-art.py`, which writes:
+   - `public/dishes/512/{name}.webp` for the reveal, dish card and set up screens
+   - `public/dishes/256/{name}.webp` for grids and small tiles
+5. **Locked dishes** are made in CSS from the cooked image (blurred and greyed). No separate files.
 
-Figma image download links expire after 7 days, and `www.figma.com` may be blocked in Claude cloud sessions. The simplest route is for Jane to export from Figma and add the files to the repository, or to allow `www.figma.com` in the session's network settings.
+`www.figma.com` is blocked in the default Claude cloud environment. The "focus-kitchen" environment allows it.
 
 ## 6. Consistency checklist (check every image)
 
@@ -106,7 +102,8 @@ Figma image download links expire after 7 days, and `www.figma.com` may be block
 - [ ] Dish centred, filling about 80% of the frame
 - [ ] Light from the upper left, soft shadow below
 - [ ] Clay or soft plastic look, not photographic
-- [ ] Cream ceramic tableware with no pattern (unless the spec says otherwise)
+- [ ] Cream ceramic tableware with no pattern (unless the dish calls for something else, such as a cast-iron pot or lacquer box)
+- [ ] Sand backdrop fills the frame, similar in tone to the other images
 - [ ] No text, no watermark, no stray props
 - [ ] Recognisable at 96 px (check a small preview)
 - [ ] Raw and burnt versions have the small sad face; cooked versions do not
