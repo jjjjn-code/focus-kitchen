@@ -22,7 +22,7 @@ Success after two weeks of use: Jane reads more often, sessions get longer, and 
 
 ### 3.1 Target time
 
-Options: 10, 15, 25, 45, 60, 90, 120 minutes. Default: 25. Remember the last choice.
+A slider from 10 to 180 minutes in 5 minute steps, with preset buttons underneath (10, 15, 30, 45 minutes and 1 hour). Default: 15. Remember the last choice.
 
 ### 3.2 Outcomes
 
@@ -158,7 +158,7 @@ interface Settings {
   graceSeconds: number;   // default 10
   sound: boolean;         // default false
   notifyExperiment: boolean;
-  lastTargetMin: number;  // default 25
+  lastTargetMin: number;  // default 15
 }
 ```
 

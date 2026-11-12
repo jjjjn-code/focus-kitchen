@@ -51,11 +51,16 @@ export const DEFAULT_SETTINGS: Settings = {
   graceSeconds: 10,
   sound: false,
   notifyExperiment: false,
-  lastTargetMin: 25,
+  lastTargetMin: 15,
   lastActivity: 'reading',
 };
 
-export const TARGET_OPTIONS = [10, 15, 25, 45, 60, 90, 120] as const;
+/** The target time slider: 10 minutes is the least that can produce a cooked dish. */
+export const MIN_TARGET_MIN = 10;
+export const MAX_TARGET_MIN = 180;
+export const TARGET_STEP_MIN = 5;
+/** Popular targets offered as buttons under the slider. */
+export const TARGET_PRESETS = [10, 15, 30, 45, 60] as const;
 
 export const ACTIVITIES: { id: Activity; label: string }[] = [
   { id: 'reading', label: 'Reading' },

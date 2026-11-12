@@ -159,6 +159,146 @@ button {
   color: #fff;
 }
 
+.chips--centre {
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.chip--small {
+  flex: 1 1 0;
+  min-height: 40px;
+  padding: 0 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+/* Target time slider */
+
+.target {
+  text-align: center;
+}
+
+.target h2 {
+  text-align: left;
+}
+
+.target__readout {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.target__readout strong {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.target__hint {
+  font-size: 0.95rem;
+}
+
+.scrubber {
+  position: relative;
+  margin: 4px -20px 16px;
+}
+
+.scrubber__scroller {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  outline: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+}
+
+.scrubber__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.scrubber__ruler {
+  display: flex;
+  align-items: flex-start;
+  width: max-content;
+  height: 72px;
+  padding: 10px calc(50% - 4.5px) 0;
+}
+
+.scrubber__tick {
+  position: relative;
+  flex: none;
+  width: 9px;
+  height: 14px;
+}
+
+.scrubber__tick::before {
+  content: '';
+  position: absolute;
+  left: 3.5px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--line);
+}
+
+.scrubber__tick.is-mid {
+  height: 24px;
+}
+
+.scrubber__tick.is-mid::before {
+  background: #d9c9b3;
+}
+
+.scrubber__tick.is-major {
+  height: 34px;
+}
+
+.scrubber__tick.is-major::before {
+  background: var(--ink-soft);
+}
+
+.scrubber__tick.is-snap {
+  scroll-snap-align: center;
+}
+
+.scrubber__label {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.scrubber__marker {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  width: 4px;
+  height: 50px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.scrubber__scroller:focus-visible + .scrubber__marker {
+  box-shadow: 0 0 0 3px rgba(232, 121, 58, 0.35);
+}
+
 .card {
   width: 100%;
   background: var(--card);

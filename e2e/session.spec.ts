@@ -4,7 +4,8 @@ async function startCooking(page: Page, target = '10 min') {
   await page.clock.install();
   await page.goto('./');
   await page.getByRole('button', { name: 'Start cooking' }).click();
-  await page.getByRole('radio', { name: target, exact: true }).click();
+  await page.getByRole('button', { name: target, exact: true }).click();
+  await expect(page.getByTestId('target-readout')).toHaveText(target);
   await page.getByRole('button', { name: 'Start', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Hold to stop' })).toBeVisible();
 }
@@ -94,4 +95,23 @@ test('reopening the app within the grace period carries on cooking', async ({ pa
   await page.clock.fastForward(3000);
   await page.goto('./');
   await expect(page.getByRole('button', { name: 'Hold to stop' })).toBeVisible();
+});
+
+test('the target time slider starts at 15 minutes and can be dragged or set with a button', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'Start cooking' }).click();
+  const readout = page.getByTestId('target-readout');
+  const slider = page.getByRole('slider', { name: 'Target time in minutes' });
+  await expect(readout).toHaveText('15 min');
+
+  // Each minute is 9 px wide and the ruler starts at 10 minutes.
+  await slider.evaluate((el) => el.scrollTo({ left: (75 - 10) * 9 }));
+  await expect(readout).toHaveText('1 hr 15 min');
+
+  await page.getByRole('button', { name: '45 min', exact: true }).click();
+  await expect(readout).toHaveText('45 min');
+  await expect(slider).toHaveAttribute('aria-valuenow', '45');
+
+  await slider.press('ArrowRight');
+  await expect(readout).toHaveText('50 min');
 });
