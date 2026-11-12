@@ -1,0 +1,57 @@
+:root {
+  --cream: #faf6ee;
+  --ink: #3b2f2a;
+  --ink-soft: #7a6a61;
+  --accent: #e8793a;
+  font-family: 'Nunito Variable', ui-rounded, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--cream);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+.kitchen {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: calc(24px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right))
+    calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
+}
+
+.kitchen__pot {
+  width: 144px;
+  height: 144px;
+  border-radius: 36px;
+}
+
+.kitchen h1 {
+  margin: 8px 0 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.kitchen p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+}
