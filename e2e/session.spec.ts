@@ -1,13 +1,34 @@
 import { expect, test, type Page } from '@playwright/test';
 
-async function startCooking(page: Page, target = '10 min') {
+const MIN_TARGET = 5;
+const TICK_PX = 9;
+
+async function setTarget(page: Page, minutes: number, label: string) {
+  const slider = page.getByRole('slider', { name: 'Target time in minutes' });
+  await slider.evaluate((el, left) => el.scrollTo({ left }), (minutes - MIN_TARGET) * TICK_PX);
+  await expect(page.getByTestId('target-readout')).toHaveText(label);
+}
+
+async function startCooking(page: Page, minutes = 10) {
   await page.clock.install();
   await page.goto('./');
   await page.getByRole('button', { name: 'Start cooking' }).click();
-  await page.getByRole('button', { name: target, exact: true }).click();
-  await expect(page.getByTestId('target-readout')).toHaveText(target);
+  await setTarget(page, minutes, `${minutes} min`);
   await page.getByRole('button', { name: 'Start', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Hold to stop' })).toBeVisible();
+  await expect(page.getByRole('timer', { name: 'Time left' })).toBeVisible();
+}
+
+/** Drag the egg along its track; `fraction` 1 goes all the way to the end. */
+async function slideEgg(page: Page, fraction: number) {
+  const thumb = page.getByRole('button', { name: /^Slide to stop/ });
+  const box = (await thumb.boundingBox())!;
+  const y = box.y + box.height / 2;
+  const x = box.x + box.width / 2;
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await page.mouse.move(x + 100 * fraction, y, { steps: 4 });
+  await page.mouse.move(x + 200 * fraction, y, { steps: 4 });
+  await page.mouse.up();
 }
 
 async function setVisibility(page: Page, state: 'hidden' | 'visible') {
@@ -42,22 +63,25 @@ test('overtime upgrades the tier', async ({ page }) => {
   await expect(page.getByText(/Main · /)).toBeVisible();
 });
 
-test('holding stop before the target gives a raw dish', async ({ page }) => {
+test('sliding the egg before the target gives a raw dish', async ({ page }) => {
   await startCooking(page);
   await page.clock.fastForward('03:00');
-  const stop = page.getByRole('button', { name: 'Hold to stop' });
 
-  // A short press does not stop the session.
-  await stop.dispatchEvent('pointerdown');
-  await page.clock.fastForward(500);
-  await stop.dispatchEvent('pointerup');
+  // Letting go part of the way does not stop the session.
+  await slideEgg(page, 0.4);
   await expect(page.getByText('Your dish is not ready yet. Stop now and it comes out raw?')).toBeVisible();
-  await expect(stop).toBeVisible();
+  await expect(page.getByRole('timer', { name: 'Time left' })).toBeVisible();
 
-  await stop.dispatchEvent('pointerdown');
-  await page.clock.fastForward(1600);
+  await slideEgg(page, 1);
   await expect(page.getByRole('heading', { name: /came out raw\.$/ })).toBeVisible();
   await expect(page.getByText('3 minutes of 10.')).toBeVisible();
+});
+
+test('a 5 minute session cooks a nibble', async ({ page }) => {
+  await startCooking(page, 5);
+  await page.clock.fastForward('05:00');
+  await page.getByRole('button', { name: 'Serve' }).click();
+  await expect(page.getByText(/Nibble · (common|rare)/i)).toBeVisible();
 });
 
 test('a short absence within the grace period carries on cooking', async ({ page }) => {
@@ -66,7 +90,7 @@ test('a short absence within the grace period carries on cooking', async ({ page
   await setVisibility(page, 'hidden');
   await page.clock.fastForward(8000);
   await setVisibility(page, 'visible');
-  await expect(page.getByRole('button', { name: 'Hold to stop' })).toBeVisible();
+  await expect(page.getByRole('timer', { name: 'Time left' })).toBeVisible();
 });
 
 test('being away longer than the grace period burns the dish', async ({ page }) => {
@@ -97,24 +121,30 @@ test('reopening the app within the grace period carries on cooking', async ({ pa
   await page.goto('about:blank');
   await page.clock.fastForward(3000);
   await page.goto('./');
-  await expect(page.getByRole('button', { name: 'Hold to stop' })).toBeVisible();
+  await expect(page.getByRole('timer', { name: 'Time left' })).toBeVisible();
 });
 
-test('the target time slider starts at 15 minutes and can be dragged or set with a button', async ({ page }) => {
+test('the target time slider starts at 15 minutes and the food changes with the time', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'Start cooking' }).click();
   const readout = page.getByTestId('target-readout');
   const slider = page.getByRole('slider', { name: 'Target time in minutes' });
+  const food = page.getByTestId('food-stage');
   await expect(readout).toHaveText('15 min');
+  await expect(food).toHaveAccessibleName('Snack');
 
-  // Each minute is 9 px wide and the ruler starts at 10 minutes.
-  await slider.evaluate((el) => el.scrollTo({ left: (75 - 10) * 9 }));
-  await expect(readout).toHaveText('1 hr 15 min');
+  await setTarget(page, 75, '1 hr 15 min');
+  await expect(food).toHaveAccessibleName('Hearty');
 
   await page.getByRole('button', { name: '45 min', exact: true }).click();
   await expect(readout).toHaveText('45 min');
   await expect(slider).toHaveAttribute('aria-valuenow', '45');
+  await expect(food).toHaveAccessibleName('Main');
+
+  await page.getByRole('button', { name: '5 min', exact: true }).click();
+  await expect(readout).toHaveText('5 min');
+  await expect(food).toHaveAccessibleName('Nibble');
 
   await slider.press('ArrowRight');
-  await expect(readout).toHaveText('50 min');
+  await expect(readout).toHaveText('10 min');
 });

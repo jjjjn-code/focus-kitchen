@@ -1,6 +1,9 @@
 import type { Dish } from '../types';
 
 export const DISHES: Dish[] = [
+  { id: 'fried-egg', name: 'Fried egg', tier: 0, rarity: 'common', blurb: 'Sunny side up, with a yolk that wobbles.' },
+  { id: 'miso-soup', name: 'Miso soup', tier: 0, rarity: 'common', blurb: 'A small, warm bowl with tofu and spring onion.' },
+  { id: 'edamame', name: 'Edamame', tier: 0, rarity: 'rare', blurb: 'Salted green pods, popped one by one.' },
   { id: 'onigiri', name: 'Onigiri', tier: 1, rarity: 'common', blurb: 'A rice ball wrapped in crisp nori, made to be eaten with your hands.' },
   { id: 'tamagoyaki', name: 'Tamagoyaki', tier: 1, rarity: 'common', blurb: 'A sweet rolled omelette, folded layer by patient layer.' },
   { id: 'fruit-sando', name: 'Fruit sando', tier: 1, rarity: 'rare', blurb: 'Soft milk bread, whipped cream and fruit cut to show its best side.' },

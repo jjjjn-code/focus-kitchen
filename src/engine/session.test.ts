@@ -66,6 +66,15 @@ describe('serving after the target', () => {
   });
 });
 
+describe('a 5 minute session', () => {
+  it('cooks a nibble', () => {
+    const s = finishByButton(begin(5), T0 + 5 * MIN, roll);
+    expect(s.outcome).toBe('cooked');
+    expect(s.tier).toBe(0);
+    expect(dishById(s.dishId!)!.tier).toBe(0);
+  });
+});
+
 describe('leaving the app', () => {
   it('continues and counts a close call when back within the grace period', () => {
     const hidden = markHidden(begin(), T0 + 5 * MIN);

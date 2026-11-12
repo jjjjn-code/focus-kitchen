@@ -1,6 +1,7 @@
 import type { Tier } from '../types';
 
 export const TIERS: { tier: Tier; name: string; minMinutes: number }[] = [
+  { tier: 0, name: 'Nibble', minMinutes: 5 },
   { tier: 1, name: 'Snack', minMinutes: 10 },
   { tier: 2, name: 'Light meal', minMinutes: 25 },
   { tier: 3, name: 'Main', minMinutes: 45 },
@@ -21,7 +22,7 @@ export function tierFor(minutes: number): Tier | null {
 }
 
 export function tierName(tier: Tier): string {
-  return TIERS[tier - 1].name;
+  return TIERS.find((t) => t.tier === tier)!.name;
 }
 
 /** Whole minutes (rounded up) until the next tier starts, or null at the top tier. */
