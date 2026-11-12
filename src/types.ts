@@ -34,6 +34,8 @@ export interface Settings {
   sound: boolean;
   notifyExperiment: boolean;
   lastTargetMin: number;
+  /** New sessions count towards this goal. */
+  activeGoalId?: string;
 }
 
 export interface Dish {
@@ -57,6 +59,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export const MIN_TARGET_MIN = 5;
 export const MAX_TARGET_MIN = 180;
 export const TARGET_STEP_MIN = 5;
+export const GRACE_OPTIONS = [5, 10, 20] as const;
 /** Popular targets offered as buttons under the slider. */
 export const TARGET_PRESETS = [5, 15, 30, 45, 60] as const;
 

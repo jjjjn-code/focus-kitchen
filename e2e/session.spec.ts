@@ -49,10 +49,18 @@ test('reaching the target and serving gives a cooked dish', async ({ page }) => 
 
   await page.getByRole('button', { name: 'Serve' }).click();
   await expect(page.getByText(/Snack · (common|rare|legendary)/i)).toBeVisible();
+  await expect(page.getByText('New!')).toBeVisible();
   await expect(page.getByText('10 minutes of focus.')).toBeVisible();
+  await expect(page.getByText('This week: 10 minutes')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Back to the kitchen' }).click();
-  await expect(page.getByText('1 dish cooked')).toBeVisible();
+  // A note is saved with the dish, which then shows in the recipe book.
+  await page.getByRole('button', { name: 'Add a note' }).click();
+  await page.getByRole('textbox', { name: 'Note' }).fill('Chapter three');
+  await page.getByRole('button', { name: 'Add to recipe book' }).click();
+  await expect(page.getByRole('heading', { name: 'Recipe book' })).toBeVisible();
+  await expect(page.getByText('1 of 23')).toBeVisible();
+  await page.getByRole('button', { name: /x1$/ }).click();
+  await expect(page.getByText('Chapter three')).toBeVisible();
 });
 
 test('overtime upgrades the tier', async ({ page }) => {
@@ -75,6 +83,14 @@ test('sliding the egg before the target gives a raw dish', async ({ page }) => {
   await slideEgg(page, 1);
   await expect(page.getByRole('heading', { name: /came out raw\.$/ })).toBeVisible();
   await expect(page.getByText('3 minutes of 10.')).toBeVisible();
+
+  // Failures go to the mishaps page, not the recipe book.
+  await page.getByRole('button', { name: 'Back to the kitchen' }).click();
+  await page.getByRole('button', { name: 'Recipe book' }).click();
+  await expect(page.getByText('0 of 23')).toBeVisible();
+  await page.getByRole('button', { name: /Kitchen mishaps/ }).click();
+  await expect(page.getByText('1 raw · 0 burnt')).toBeVisible();
+  await expect(page.getByText(/3 of 10 min/)).toBeVisible();
 });
 
 test('a 5 minute session cooks a nibble', async ({ page }) => {

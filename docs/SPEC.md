@@ -115,7 +115,7 @@ Store the menu as `src/data/dishes.ts` with `{ id, name, tier, rarity, blurb }`.
 ## 5. Screens
 
 1. **Kitchen (home)**: big Start cooking button, today's focus minutes, current streak (days with at least one cooked dish), last dish cooked.
-2. **Set up**: a food picture on top that changes as the time slides (one per tier: egg, onigiri, omurice, ramen, pot, cake), showing that longer focus cooks more elaborate food. It shows the kind of dish, never the exact one. Below it only the target time (big number, slider, preset buttons) and a Start button. No activity picker (removed at Jane's request; sessions are recorded as reading). The goal picker is still to be designed for M4.
+2. **Set up**: a food picture on top that changes as the time slides (one per tier: egg, onigiri, omurice, ramen, pot, cake), showing that longer focus cooks more elaborate food. It shows the kind of dish, never the exact one. Below it only the target time (big number, slider, preset buttons) and a Start button. No activity picker (removed at Jane's request; sessions are recorded as reading). There is no goal picker here: new sessions count towards the goal marked "Cooking for this" on the Goals screen.
 3. **Cooking**: soft sand background (changed from near-black at Jane's request); a thick progress ring with an animated pot inside it (lid that bubbles, steam and a flame, no dish visible). Below it one big number: a countdown to the target, then the time focused counting up. After the target: "Cooked! Keep going to upgrade" and the next-tier hint. Slide to stop, or Serve after the target.
 4. **Reveal**: lid lifts, dish appears with a gentle bounce, name, rarity badge, "New!" badge for a first-time dish. Below: minutes focused, activity and goal, this week's total, and one message (see section 7). Buttons: "Add to recipe book" (default) and an optional "Add a note" (for example, a favourite line from the book).
 5. **Failure**: the raw or burnt dish image (with a sad face, see the art guide), one gentle line, time focused before it went wrong. No shaming.
@@ -123,7 +123,7 @@ Store the menu as `src/data/dishes.ts` with `{ id, name, tier, rarity, blurb }`.
 7. **Kitchen mishaps**: separate page listing raw and burnt results with counts.
 8. **Goals**: list of goals with total minutes and dishes cooked for each. "Mark as finished" shows a **feast** screen: every dish cooked for that goal laid out together on a table, titled with the goal name (for example "The Atomic Habits feast").
 9. **Stats**: minutes per day for the last 14 days (simple bar chart), total minutes, longest session, close calls.
-10. **Settings**: grace period (5, 10, 20 seconds), sound on or off (off by default), notification experiment on or off, export data (JSON download), import data.
+10. **Settings**: grace period (5, 10, 20 seconds), notification experiment on or off, export data (JSON download), import data (replaces everything on the device). There is no sound toggle yet because the app has no sounds.
 
 Navigation: bottom tab bar with Kitchen, Recipe book, Goals, Stats. Settings from the Kitchen screen.
 
@@ -167,11 +167,13 @@ interface Settings {
 
 The collection, counts, streaks and stats are all derived from sessions. Only one session may be `active` at a time.
 
-Implementation notes added in M1:
+Implementation notes:
 
 - The one `active` session is kept in `localStorage`, not IndexedDB, because the write is synchronous and so `hiddenAt` is safely stored before iOS suspends the page. It moves to IndexedDB when the session ends.
 - `Session` also has `lastSeenAt` (a heartbeat written every 5 seconds while visible) and `leftKitchen`. If the page is killed without warning, the last heartbeat stands in for `hiddenAt`, so the focused minutes stay accurate.
-- `Settings` also has `lastActivity`, remembered like `lastTargetMin`.
+- `Settings` also has `activeGoalId`, the goal that new sessions count towards.
+- Dish pictures are emoji placeholders (`src/data/art.ts`) until the clay renders are ready in M3.
+- Reveal messages are personal stats only. No quotes or research findings have been added, because none have been verified yet.
 
 Home Screen PWAs on iOS are not subject to Safari's 7-day storage eviction, but keep the JSON export as a backup anyway.
 
