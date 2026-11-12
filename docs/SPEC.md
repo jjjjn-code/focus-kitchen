@@ -119,7 +119,7 @@ Store the menu as `src/data/dishes.ts` with `{ id, name, tier, rarity, blurb }`.
 3. **Cooking**: soft sand background (changed from near-black at Jane's request); a thick progress ring with an animated pot inside it (lid that bubbles, steam and a flame, no dish visible). Below it one big number: a countdown to the target, then the time focused counting up. After the target: "Cooked! Keep going to upgrade" and the next-tier hint. Slide to stop, or Serve after the target.
 4. **Reveal**: lid lifts, dish appears with a gentle bounce, name, rarity badge, "New!" badge for a first-time dish. Below: minutes focused, activity and goal, this week's total, and one message (see section 7). Buttons: "Add to recipe book" (default) and an optional "Add a note" (for example, a favourite line from the book).
 5. **Failure**: the raw or burnt dish image (with a sad face, see the art guide), one gentle line, time focused before it went wrong. No shaming.
-6. **Recipe book**: grid grouped by tier. Uncooked dishes show as a dark silhouette of the dish image (CSS `filter: brightness(0)` with low opacity), so no extra art is needed. Cooked dishes show the image and a "x3" count. Tapping opens a **dish card**: image, blurb, every time it was cooked (date, minutes, activity, goal, note).
+6. **Recipe book**: grid grouped by tier. Uncooked dishes show as a blurred, greyed version of the dish image, so no extra art is needed. Cooked dishes show the image and a "x3" count. Tapping opens a **dish card**: image, blurb, every time it was cooked (date, minutes, activity, goal, note).
 7. **Kitchen mishaps**: separate page listing raw and burnt results with counts.
 8. **Goals**: list of goals with total minutes and dishes cooked for each. "Mark as finished" shows a **feast** screen: every dish cooked for that goal laid out together on a table, titled with the goal name (for example "The Atomic Habits feast").
 9. **Stats**: minutes per day for the last 14 days (simple bar chart), total minutes, longest session, close calls.
@@ -172,7 +172,7 @@ Implementation notes:
 - The one `active` session is kept in `localStorage`, not IndexedDB, because the write is synchronous and so `hiddenAt` is safely stored before iOS suspends the page. It moves to IndexedDB when the session ends.
 - `Session` also has `lastSeenAt` (a heartbeat written every 5 seconds while visible) and `leftKitchen`. If the page is killed without warning, the last heartbeat stands in for `hiddenAt`, so the focused minutes stay accurate.
 - `Settings` also has `activeGoalId`, the goal that new sessions count towards.
-- Dish pictures are emoji placeholders (`src/data/art.ts`) until the clay renders are ready in M3.
+- All 23 cooked dish pictures are in `public/dishes/`. Raw and burnt dishes reuse the cooked picture with a colour treatment and a sad face badge until their own pictures exist. Locked dishes in the recipe book are a blurred, greyed version of the picture.
 - Reveal messages are personal stats only. No quotes or research findings have been added, because none have been verified yet.
 
 Home Screen PWAs on iOS are not subject to Safari's 7-day storage eviction, but keep the JSON export as a backup anyway.

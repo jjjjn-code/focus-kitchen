@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MAX_TARGET_MIN, MIN_TARGET_MIN, TARGET_PRESETS, TARGET_STEP_MIN, type Settings } from '../types';
+import DishArt from './DishArt';
 import { FOOD_STAGES, stageIndexFor } from './FoodArt';
 import { BackButton } from './TabBar';
 import TimeScrubber from './TimeScrubber';
@@ -41,7 +42,7 @@ export default function Setup({ settings, onBack, onStart }: Props) {
         >
           {FOOD_STAGES.map((s, i) => (
             <div key={s.fromMin} className={`setup__food${i === stage ? ' is-active' : ''}`} aria-hidden="true">
-              {s.art}
+              <DishArt dishId={s.dishId} size={220} />
             </div>
           ))}
         </div>

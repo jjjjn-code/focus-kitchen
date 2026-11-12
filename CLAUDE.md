@@ -39,5 +39,5 @@ Owner: Jane. Version 1 (the MVP) is for Jane only. No App Store, no accounts, no
 ## Reference material
 
 - Figma file with approved style samples (3D row is the chosen style): https://www.figma.com/design/XJ9uISO5YPC32BH0ESBZfw
-  The "3D / Omurice" frame is the style anchor. Note: in Claude cloud sessions, `www.figma.com` downloads may be blocked by the network policy; Jane can export the images from Figma, or allow that host.
+  The "3D / Omurice" frame is the style anchor. Note: the "focus-kitchen" cloud environment allows `www.figma.com` (for dish art downloads) and `jjjjn-code.github.io` (to check the live site). The Default environment blocks both.
 - Competitors (so we stay different): Focus Friend (bean knits, room decorating), Focus Fridge (mystery food box per session), Focus Noodles, FocusOven, Sweet Time, Fodcus, Forest. Our differences: the dish tier grows with open-ended overtime, two distinct failure states, a recipe book that doubles as a focus journal, goal "feasts", and verified research messages.
