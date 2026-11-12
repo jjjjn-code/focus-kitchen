@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MAX_TARGET_MIN, MIN_TARGET_MIN, TARGET_PRESETS, TARGET_STEP_MIN, type Settings } from '../types';
 import { FOOD_STAGES, stageIndexFor } from './FoodArt';
+import { BackButton } from './TabBar';
 import TimeScrubber from './TimeScrubber';
 
 interface Props {
@@ -30,11 +31,7 @@ export default function Setup({ settings, onBack, onStart }: Props) {
     <main className="setup">
       {/* The longer the session, the more elaborate the food. */}
       <div className="setup__stage" style={{ backgroundColor: FOOD_STAGES[stage].colour }}>
-        <button className="back" onClick={onBack} aria-label="Back">
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        <BackButton onBack={onBack} />
         <div
           className="setup__foods"
           style={{ '--stage': stage } as React.CSSProperties}

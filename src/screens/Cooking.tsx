@@ -21,6 +21,8 @@ const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 interface Props {
   session: Session;
   graceSeconds: number;
+  /** Experiment: try to send a notification the moment the page is hidden. */
+  notifyOnLeave: boolean;
   roll: RollContext;
   onEnd: (session: Session) => void;
 }
@@ -47,7 +49,7 @@ function useThemeColour(colour: string) {
   }, [colour]);
 }
 
-export default function Cooking({ session: initial, graceSeconds, roll, onEnd }: Props) {
+export default function Cooking({ session: initial, graceSeconds, notifyOnLeave, roll, onEnd }: Props) {
   // The session lives in a ref so event handlers always see the latest copy,
   // and every change is written to storage straight away.
   const sessionRef = useRef(initial);
@@ -55,8 +57,8 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
   const [awake, setAwake] = useState<AwakeMode | 'pending'>('pending');
   const [warning, setWarning] = useState(false);
   const ended = useRef(false);
-  const latest = useRef({ graceSeconds, roll, onEnd });
-  latest.current = { graceSeconds, roll, onEnd };
+  const latest = useRef({ graceSeconds, notifyOnLeave, roll, onEnd });
+  latest.current = { graceSeconds, notifyOnLeave, roll, onEnd };
 
   const update = (next: Session) => {
     sessionRef.current = next;
@@ -74,6 +76,17 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
     const onHidden = () => {
       if (ended.current) return;
       update(markHidden(sessionRef.current, Date.now()));
+      const { notifyOnLeave, graceSeconds } = latest.current;
+      if (notifyOnLeave && 'Notification' in window && Notification.permission === 'granted') {
+        void navigator.serviceWorker?.ready
+          .then((registration) =>
+            registration.showNotification('Focus Kitchen', {
+              body: `Your dish is still cooking! Come back within ${graceSeconds} seconds.`,
+              tag: 'left-kitchen',
+            }),
+          )
+          .catch(() => {});
+      }
     };
 
     const onVisible = () => {
