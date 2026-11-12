@@ -1,18 +1,19 @@
+/* Palette: soft clay tones. Warm and calm, nothing sharp. */
 :root {
-  --cream: #faf6ee;
-  --card: #ffffff;
-  --ink: #3b2f2a;
-  --ink-soft: #7a6a61;
-  --line: #eadfce;
-  --accent: #e8793a;
-  --accent-dark: #c95f2a;
-  --cook: #ee7b3c;
-  --cook-done: #f2a93b;
-  --cook-ink: #5b2410;
-  --cook-cream: #fff6e6;
+  --sand: #f3e4cf; /* page background */
+  --sand-deep: #ebd3b4; /* cooking background */
+  --cream: #fbf6ee;
+  --ink: #3e3029;
+  --ink-soft: #8a7466;
+  --line: #e0ccb1;
+  --clay: #c9775a;
+  --clay-dark: #a85c44;
+  --blue: #5e8ca8;
+  --sage: #6e9a78;
+  --yolk: #f2b03c;
   font-family: 'Nunito Variable', ui-rounded, system-ui, sans-serif;
   color: var(--ink);
-  background: var(--cream);
+  background: var(--sand);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -28,17 +29,13 @@ body,
 }
 
 body {
-  background: var(--cream);
+  background: var(--sand);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }
 
 body:has(.cooking) {
-  background: var(--cook);
-}
-
-body:has(.cooking.is-cooked) {
-  background: var(--cook-done);
+  background: var(--sand-deep);
 }
 
 h1 {
@@ -46,15 +43,6 @@ h1 {
   font-size: 1.75rem;
   font-weight: 800;
   line-height: 1.2;
-}
-
-h2 {
-  margin: 0 0 10px;
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
 }
 
 p {
@@ -95,14 +83,6 @@ button {
   gap: 16px;
 }
 
-.page__footer {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  text-align: center;
-}
-
 .hero {
   flex: 1;
   display: flex;
@@ -118,14 +98,13 @@ button {
 }
 
 .back {
-  align-self: flex-start;
   width: 44px;
   height: 44px;
-  margin-left: -10px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  color: var(--ink-soft);
+  color: var(--ink);
+  background: rgba(251, 246, 238, 0.6);
 }
 
 /* Buttons and chips */
@@ -139,14 +118,12 @@ button {
 }
 
 .button--primary {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 0 var(--accent-dark);
+  background: var(--ink);
+  color: var(--cream);
 }
 
 .button--primary:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 var(--accent-dark);
+  transform: scale(0.98);
 }
 
 .button--big {
@@ -161,28 +138,21 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 12px;
-}
-
-.chip {
-  min-height: 44px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: var(--card);
-  border: 2px solid var(--line);
-  font-weight: 700;
-}
-
-.chip[aria-checked='true'] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
 }
 
 .chips--centre {
   flex-wrap: nowrap;
   justify-content: center;
   gap: 6px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--cream);
+  border: 2px solid transparent;
+  font-weight: 700;
 }
 
 .chip--small {
@@ -194,19 +164,101 @@ button {
 }
 
 .chip[aria-pressed='true'] {
-  border-color: var(--accent);
-  color: var(--accent-dark);
+  border-color: var(--ink);
 }
 
-/* Target time slider */
-
-.target {
-  flex: 1;
+.card {
+  width: 100%;
+  background: var(--cream);
+  border-radius: 28px;
+  padding: 28px 22px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 10px;
+}
+
+.result__eyebrow {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clay-dark);
+}
+
+.result--raw .result__eyebrow,
+.result--burnt .result__eyebrow {
+  color: var(--ink-soft);
+}
+
+/* Set up: food picture on top, the time in the middle */
+
+.setup {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.setup__stage {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 220px;
+  overflow: hidden;
+  border-radius: 0 0 36px 36px;
+  padding: calc(14px + env(safe-area-inset-top)) 14px 0;
+  transition: background-color 0.5s ease;
+}
+
+.setup__stage .back {
+  position: relative;
+  z-index: 1;
+}
+
+.setup__foods {
+  --slide: 68%;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  transform: translateX(calc((100% - var(--slide)) / 2 - var(--stage) * var(--slide)));
+  transition: transform 0.55s cubic-bezier(0.3, 1.2, 0.4, 1);
+}
+
+.setup__food {
+  flex: none;
+  width: var(--slide);
+  display: grid;
+  place-items: center;
+  padding-top: env(safe-area-inset-top);
+  transform: scale(0.72);
+  opacity: 0.55;
+  transition:
+    transform 0.55s cubic-bezier(0.3, 1.2, 0.4, 1),
+    opacity 0.4s ease;
+}
+
+.setup__food.is-active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.setup__food svg {
+  width: min(230px, 100%);
+  height: auto;
+}
+
+.setup__panel {
+  flex: none;
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  padding-bottom: 24px;
+  padding: 22px calc(20px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom))
+    calc(20px + env(safe-area-inset-left));
+}
+
+.setup__panel .button--big {
+  margin-top: 26px;
 }
 
 .target__readout {
@@ -217,15 +269,15 @@ button {
 }
 
 .target__readout strong {
-  font-size: 5.5rem;
+  font-size: 5rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
   color: var(--ink);
 }
 
 .scrubber {
   position: relative;
-  margin: 12px -20px 28px;
+  margin: 8px -20px 20px;
 }
 
 .scrubber__scroller {
@@ -274,7 +326,7 @@ button {
 }
 
 .scrubber__tick.is-mid::before {
-  background: #d9c9b3;
+  background: #cdb497;
 }
 
 .scrubber__tick.is-major {
@@ -304,43 +356,19 @@ button {
   position: absolute;
   left: 50%;
   top: 2px;
-  width: 4px;
+  width: 5px;
   height: 50px;
-  margin-left: -2px;
-  border-radius: 2px;
-  background: var(--accent);
+  margin-left: -2.5px;
+  border-radius: 3px;
+  background: var(--ink);
   pointer-events: none;
 }
 
 .scrubber__scroller:focus-visible + .scrubber__marker {
-  box-shadow: 0 0 0 3px rgba(232, 121, 58, 0.35);
+  box-shadow: 0 0 0 3px rgba(62, 48, 41, 0.25);
 }
 
-.card {
-  width: 100%;
-  background: var(--card);
-  border-radius: 24px;
-  padding: 28px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 2px 0 var(--line);
-}
-
-.result__eyebrow {
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-dark);
-}
-
-.result--raw .result__eyebrow,
-.result--burnt .result__eyebrow {
-  color: var(--ink-soft);
-}
-
-/* Cooking screen: warm and calm, one big number */
+/* Cooking: a ring, the pot, and one big number */
 
 .cooking {
   min-height: 100%;
@@ -348,39 +376,22 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   text-align: center;
-  background: var(--cook);
-  color: var(--cook-cream);
+  background: var(--sand-deep);
+  color: var(--ink);
   padding: calc(24px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));
-  transition: background-color 1.2s ease;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
 
-.cooking.is-cooked {
-  background: var(--cook-done);
-}
-
 .cooking__stage {
   position: relative;
-  width: min(280px, 72vw);
+  width: min(290px, 74vw);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-}
-
-.cooking__sun {
-  position: absolute;
-  inset: 9%;
-  border-radius: 50%;
-  background: #ffd166;
-  animation: breathe 6s ease-in-out infinite;
-}
-
-.is-cooked .cooking__sun {
-  background: #ffe29a;
 }
 
 .ring {
@@ -393,21 +404,34 @@ button {
 
 .ring circle {
   fill: none;
-  stroke-width: 6;
+  stroke-width: 30;
 }
 
 .ring__track {
-  stroke: rgba(255, 246, 230, 0.28);
+  stroke: rgba(62, 48, 41, 0.12);
 }
 
 .ring__bar {
-  stroke: var(--cook-cream);
+  stroke: var(--blue);
   stroke-linecap: round;
-  transition: stroke-dashoffset 1s linear;
+  transition:
+    stroke-dashoffset 1s linear,
+    stroke 1.2s ease;
+}
+
+.is-cooked .ring__bar {
+  stroke: var(--sage);
+}
+
+.cooking__plate {
+  position: absolute;
+  inset: 17%;
+  border-radius: 50%;
+  background: var(--cream);
 }
 
 .cooking__time {
-  margin-top: 14px;
+  margin-top: 18px;
   font-size: clamp(4.2rem, 21vw, 5.6rem);
   font-weight: 800;
   line-height: 1;
@@ -416,13 +440,12 @@ button {
 }
 
 .cooking__status {
-  min-height: 64px;
+  min-height: 62px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 6px;
   max-width: 300px;
-  color: var(--cook-ink);
 }
 
 .cooking__headline {
@@ -432,11 +455,12 @@ button {
 .cooking__hint {
   font-size: 0.95rem;
   font-weight: 700;
+  color: var(--ink-soft);
 }
 
 .cooking__tip {
   font-size: 0.8rem;
-  opacity: 0.75;
+  color: var(--ink-soft);
 }
 
 .tier-badge {
@@ -444,50 +468,86 @@ button {
   margin-right: 8px;
   padding: 2px 10px;
   border-radius: 999px;
-  background: var(--cook-ink);
-  color: var(--cook-cream);
+  background: var(--sage);
+  color: var(--cream);
   font-size: 0.8rem;
   font-weight: 800;
 }
 
 .cooking__actions {
-  min-height: 60px;
-  margin-top: 6px;
+  width: 100%;
+  min-height: 68px;
+  display: grid;
+  place-items: center;
 }
 
 .button--serve {
-  background: var(--cook-cream);
-  color: var(--accent-dark);
-  min-width: 220px;
-  min-height: 60px;
+  background: var(--ink);
+  color: var(--cream);
+  min-width: 240px;
+  min-height: 64px;
   font-size: 1.15rem;
-  box-shadow: 0 4px 0 rgba(91, 36, 16, 0.25);
 }
 
-.button--hold {
+/* Slide to stop: a fried egg on a dark track */
+
+.slide {
   position: relative;
-  overflow: hidden;
-  min-width: 200px;
-  color: var(--cook-cream);
-  background: rgba(91, 36, 16, 0.22);
+  width: min(260px, 100%);
+  height: 68px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--ink);
   touch-action: none;
 }
 
-.button--hold__fill {
+.slide__label {
   position: absolute;
   inset: 0;
-  background: var(--cook-ink);
-  transform: scaleX(0);
-  transform-origin: left;
+  display: grid;
+  place-items: center;
+  padding-left: 48px;
+  color: rgba(251, 246, 238, 0.7);
+  font-weight: 800;
+  pointer-events: none;
 }
 
-.button--hold.is-holding .button--hold__fill {
-  transform: scaleX(1);
-  transition: transform var(--hold-ms) linear;
-}
-
-.button--hold__label {
+.slide__thumb {
   position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f1e8e2;
+  touch-action: none;
+  transition: transform 0.35s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.slide.is-dragging .slide__thumb {
+  transition: none;
+}
+
+.slide__yolk {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f7c552, #ec8f2f);
+}
+
+.slide__yolk::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #fff;
+  border-color: #fff transparent transparent #fff;
+  border-radius: 50%;
+  transform: rotate(10deg);
+  opacity: 0.9;
 }
 
 /* The pot */
@@ -496,6 +556,7 @@ button {
   position: relative;
   width: 150px;
   height: 150px;
+  transform: scale(0.82);
   animation: simmer 2.6s ease-in-out infinite;
 }
 
@@ -506,7 +567,7 @@ button {
   top: 62px;
   height: 64px;
   border-radius: 8px 8px 36px 36px;
-  background: #d9552b;
+  background: var(--clay);
 }
 
 .pot__body::before,
@@ -517,7 +578,7 @@ button {
   width: 22px;
   height: 13px;
   border-radius: 7px;
-  background: #b8421f;
+  background: var(--clay-dark);
 }
 
 .pot__body::before {
@@ -537,8 +598,8 @@ button {
   height: 20px;
   margin-left: -22px;
   background:
-    radial-gradient(circle at 5px 5px, var(--cook-ink) 4.5px, transparent 5px),
-    radial-gradient(circle at 39px 5px, var(--cook-ink) 4.5px, transparent 5px);
+    radial-gradient(circle at 5px 5px, var(--ink) 4.5px, transparent 5px),
+    radial-gradient(circle at 39px 5px, var(--ink) 4.5px, transparent 5px);
 }
 
 .pot__face::after {
@@ -549,7 +610,7 @@ button {
   width: 14px;
   height: 8px;
   margin-left: -7px;
-  border: 3px solid var(--cook-ink);
+  border: 3px solid var(--ink);
   border-top: 0;
   border-radius: 0 0 12px 12px;
 }
@@ -561,7 +622,7 @@ button {
   top: 45px;
   height: 17px;
   border-radius: 10px;
-  background: #f4a261;
+  background: #e0a07e;
   transform-origin: 20% 100%;
   animation: lid 2.6s ease-in-out infinite;
 }
@@ -574,7 +635,7 @@ button {
   height: 14px;
   margin-left: -12px;
   border-radius: 8px 8px 3px 3px;
-  background: #b8421f;
+  background: var(--clay-dark);
 }
 
 .pot__steam {
@@ -592,7 +653,7 @@ button {
   width: 7px;
   height: 24px;
   border-radius: 4px;
-  background: #fff;
+  background: #d9c7b2;
   opacity: 0;
   animation: steam 3.2s ease-out infinite;
 }
@@ -619,7 +680,7 @@ button {
   width: 14px;
   height: 18px;
   border-radius: 50% 50% 50% 50% / 68% 68% 32% 32%;
-  background: linear-gradient(#ffb703, #e63946);
+  background: linear-gradient(var(--yolk), #dd7a4a);
   transform-origin: 50% 100%;
   animation: flame 0.9s ease-in-out infinite alternate;
 }
@@ -633,23 +694,13 @@ button {
   animation-delay: 0.6s;
 }
 
-@keyframes breathe {
-  0%,
-  100% {
-    transform: scale(0.96);
-  }
-  50% {
-    transform: scale(1.03);
-  }
-}
-
 @keyframes simmer {
   0%,
   100% {
-    transform: translateY(0);
+    transform: scale(0.82) translateY(0);
   }
   50% {
-    transform: translateY(-3px);
+    transform: scale(0.82) translateY(-3px);
   }
 }
 
@@ -700,8 +751,7 @@ button {
   .pot,
   .pot__lid,
   .pot__flame span,
-  .pot__steam span,
-  .cooking__sun {
+  .pot__steam span {
     animation: none;
   }
 
@@ -710,7 +760,10 @@ button {
   }
 
   .ring__bar,
-  .cooking {
+  .setup__stage,
+  .setup__foods,
+  .setup__food,
+  .slide__thumb {
     transition: none;
   }
 }

@@ -22,7 +22,7 @@ Success after two weeks of use: Jane reads more often, sessions get longer, and 
 
 ### 3.1 Target time
 
-A slider from 10 to 180 minutes in 5 minute steps, with preset buttons underneath (10, 15, 30, 45 minutes and 1 hour). Default: 15. Remember the last choice.
+A slider from 5 to 180 minutes in 5 minute steps, with preset buttons underneath (5, 15, 30, 45 minutes and 1 hour). Default: 15. Remember the last choice.
 
 ### 3.2 Outcomes
 
@@ -32,7 +32,7 @@ A slider from 10 to 180 minutes in 5 minute steps, with preset buttons underneat
 | Leaves the app and does not return within the grace period | **Burnt** |
 | Reaches the target, then taps Serve | **Cooked**: dish from the tier matching the **actual focused minutes** |
 
-- Stop needs a **press and hold** (about 1.5 seconds) with the message "Your dish is not ready yet. Stop now and it comes out raw?"
+- Stop is a **slide to stop** control (a fried egg dragged along a dark track; letting go early slides it back) with the message "Your dish is not ready yet. Stop now and it comes out raw?"
 - After the target is reached, the main button changes to **Serve**. There is no failure after the target is reached except leaving the app (which still burns the dish: "You left the kitchen").
   - Open question for Jane: should leaving after the target burn the dish, or just serve it at the tier reached so far? Default for v1: **serve at the tier reached when she left**, because the target was met. Easy to change in settings code.
 - There is no pause.
@@ -53,7 +53,7 @@ A web app cannot tell the difference between locking the screen and switching ap
 
 ### 3.4 Minimum
 
-Sessions under 10 minutes of focus never produce a cooked dish.
+Sessions under 5 minutes of focus never produce a cooked dish.
 
 ## 4. Tiers and dish roll
 
@@ -61,6 +61,7 @@ Sessions under 10 minutes of focus never produce a cooked dish.
 
 | Tier | Name | Minutes |
 |---|---|---|
+| 0 | Nibble | 5 to 9 |
 | 1 | Snack | 10 to 24 |
 | 2 | Light meal | 25 to 44 |
 | 3 | Main | 45 to 74 |
@@ -79,12 +80,15 @@ Collection boost: dishes Jane has **never cooked** get double weight, so the col
 
 For raw or burnt outcomes, roll a dish from the tier of the **target time** (what she was trying to cook). The failure screen names it: "Your shoyu ramen came out raw." This should sting a little.
 
-### 4.4 Starter menu (20 dishes)
+### 4.4 Starter menu (23 dishes)
 
 Japanese and East Asian comfort food, matching the 3D style samples. `id` values are used for asset file names.
 
 | Tier | id | Name | Rarity |
 |---|---|---|---|
+| 0 | fried-egg | Fried egg | common |
+| 0 | miso-soup | Miso soup | common |
+| 0 | edamame | Edamame | rare |
 | 1 | onigiri | Onigiri | common |
 | 1 | tamagoyaki | Tamagoyaki | common |
 | 1 | fruit-sando | Fruit sando | rare |
@@ -111,8 +115,8 @@ Store the menu as `src/data/dishes.ts` with `{ id, name, tier, rarity, blurb }`.
 ## 5. Screens
 
 1. **Kitchen (home)**: big Start cooking button, today's focus minutes, current streak (days with at least one cooked dish), last dish cooked.
-2. **Set up**: only the target time, in the middle of the screen (big number, slider, preset buttons), and a Start button. No activity picker (removed at Jane's request; sessions are recorded as reading). The goal picker is still to be designed for M4.
-3. **Cooking**: warm orange background (changed from near-black at Jane's request); an animated pot with a lid that bubbles, steam and a flame (no dish visible). One big number: a countdown to the target, then the time focused counting up. A progress ring to the target. After the target: "Cooked! Keep going to upgrade" and the next-tier hint. Hold-to-stop button, or Serve after the target.
+2. **Set up**: a food picture on top that changes as the time slides (one per tier: egg, onigiri, omurice, ramen, pot, cake), showing that longer focus cooks more elaborate food. It shows the kind of dish, never the exact one. Below it only the target time (big number, slider, preset buttons) and a Start button. No activity picker (removed at Jane's request; sessions are recorded as reading). The goal picker is still to be designed for M4.
+3. **Cooking**: soft sand background (changed from near-black at Jane's request); a thick progress ring with an animated pot inside it (lid that bubbles, steam and a flame, no dish visible). Below it one big number: a countdown to the target, then the time focused counting up. After the target: "Cooked! Keep going to upgrade" and the next-tier hint. Slide to stop, or Serve after the target.
 4. **Reveal**: lid lifts, dish appears with a gentle bounce, name, rarity badge, "New!" badge for a first-time dish. Below: minutes focused, activity and goal, this week's total, and one message (see section 7). Buttons: "Add to recipe book" (default) and an optional "Add a note" (for example, a favourite line from the book).
 5. **Failure**: the raw or burnt dish image (with a sad face, see the art guide), one gentle line, time focused before it went wrong. No shaming.
 6. **Recipe book**: grid grouped by tier. Uncooked dishes show as a dark silhouette of the dish image (CSS `filter: brightness(0)` with low opacity), so no extra art is needed. Cooked dishes show the image and a "x3" count. Tapping opens a **dish card**: image, blurb, every time it was cooked (date, minutes, activity, goal, note).
@@ -187,8 +191,8 @@ Store messages in `src/data/messages.ts`. Start with stat templates only if veri
 
 ## 8. Look and feel
 
-- Warm, cosy and playful outside the cooking screen: cream background (around `#FAF6EE`), soft rounded cards, warm accent colours taken from the food art.
-- Cooking screen: warm orange (`#EE7B3C`), turning golden (`#F2A93B`) once the dish is cooked.
+- Warm, cosy and calm: soft clay tones taken from Jane's clay figure references. Sand background (`#F3E4CF`), cream cards, dark brown ink (`#3E3029`) for text and buttons, with muted blue, sage, terracotta and yolk yellow as accents. No sharp or saturated orange.
+- Cooking screen: deeper sand (`#EBD3B4`); the ring is muted blue and turns sage once the dish is cooked.
 - One dominant thing per screen and very few words, in the spirit of Headspace.
 - Rounded, friendly typeface (for example "Nunito" or "Quicksand" from Google Fonts, self-hosted for offline use).
 - Gentle animations only. Respect `prefers-reduced-motion`.
@@ -211,7 +215,7 @@ Store messages in `src/data/messages.ts`. Start with stat templates only if veri
 | M0 | Scaffold and deploy | Empty PWA installs on Jane's iPhone from GitHub Pages |
 | M1 | Session engine | Timer, target, hold-to-stop, raw and burnt rules, wake lock, all unit tested |
 | M2 | Reveal and recipe book | Uses placeholder art (emoji or simple shapes) so it can ship before the art is ready |
-| M3 | Dish art | 20 dishes with cooked, raw and burnt images in place (see ART_GUIDE.md) |
+| M3 | Dish art | 23 dishes with cooked, raw and burnt images in place (see ART_GUIDE.md) |
 | M4 | Goals, feasts, stats, messages | All screens in section 5 working |
 | M5 | Polish and two-week trial | Jane uses it daily; collect notes for tuning |
 

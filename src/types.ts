@@ -1,7 +1,7 @@
 export type Activity = 'reading' | 'study' | 'work' | 'creative' | 'other';
 export type Outcome = 'active' | 'cooked' | 'raw' | 'burnt';
 export type Rarity = 'common' | 'rare' | 'legendary';
-export type Tier = 1 | 2 | 3 | 4 | 5;
+export type Tier = 0 | 1 | 2 | 3 | 4 | 5;
 
 export interface Session {
   id: string;
@@ -53,12 +53,12 @@ export const DEFAULT_SETTINGS: Settings = {
   lastTargetMin: 15,
 };
 
-/** The target time slider: 10 minutes is the least that can produce a cooked dish. */
-export const MIN_TARGET_MIN = 10;
+/** The target time slider: 5 minutes is the least that can produce a cooked dish. */
+export const MIN_TARGET_MIN = 5;
 export const MAX_TARGET_MIN = 180;
 export const TARGET_STEP_MIN = 5;
 /** Popular targets offered as buttons under the slider. */
-export const TARGET_PRESETS = [10, 15, 30, 45, 60] as const;
+export const TARGET_PRESETS = [5, 15, 30, 45, 60] as const;
 
 /** There is no activity picker for now, so every session is recorded with this activity. */
 export const DEFAULT_ACTIVITY: Activity = 'reading';

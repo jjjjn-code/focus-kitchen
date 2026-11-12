@@ -12,11 +12,10 @@ import { minutesToNextTier, tierFor, tierName } from '../engine/tiers';
 import { allowSleep, keepAwake, type AwakeMode } from '../screenAwake';
 import { saveActiveSession } from '../storage';
 import type { Session } from '../types';
-import HoldButton from './HoldButton';
+import SlideToStop from './SlideToStop';
 
-const HOLD_TO_STOP_MS = 1500;
 const HEARTBEAT_MS = 5000;
-const RING_RADIUS = 132;
+const RING_RADIUS = 122;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
 interface Props {
@@ -131,14 +130,13 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
   const toNext = minutesToNextTier(elapsed);
   const remaining = session.targetMin * 60_000 - elapsed;
 
-  useThemeColour(reached ? '#F2A93B' : '#EE7B3C');
+  useThemeColour('#EBD3B4');
 
   const finish = () => end(finishByButton(sessionRef.current, Date.now(), latest.current.roll));
 
   return (
     <main className={`cooking${reached ? ' is-cooked' : ''}`}>
       <div className="cooking__stage">
-        <div className="cooking__sun" aria-hidden="true" />
         <svg className="ring" viewBox="0 0 300 300" aria-hidden="true">
           <circle className="ring__track" cx="150" cy="150" r={RING_RADIUS} />
           <circle
@@ -150,6 +148,7 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
             strokeDashoffset={RING_LENGTH * (1 - progress)}
           />
         </svg>
+        <div className="cooking__plate" aria-hidden="true" />
         <div className="pot" aria-hidden="true">
           <div className="pot__steam">
             <span />
@@ -180,7 +179,7 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
           <>
             <p className="cooking__headline">Cooked! Keep going to upgrade</p>
             <p className="cooking__hint">
-              {tier && <span className="tier-badge">{tierName(tier)}</span>}
+              {tier !== null && <span className="tier-badge">{tierName(tier)}</span>}
               {toNext === null ? 'Top tier reached' : `Next tier in ${toNext} min`}
             </p>
           </>
@@ -198,9 +197,7 @@ export default function Cooking({ session: initial, graceSeconds, roll, onEnd }:
             Serve
           </button>
         ) : (
-          <HoldButton holdMs={HOLD_TO_STOP_MS} onHoldStart={() => setWarning(true)} onComplete={finish}>
-            Hold to stop
-          </HoldButton>
+          <SlideToStop label="Slide to stop" onSlideStart={() => setWarning(true)} onComplete={finish} />
         )}
       </div>
     </main>

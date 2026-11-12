@@ -16,7 +16,7 @@ const browser = await chromium.launch();
 for (const { file, size, scale } of targets) {
   const page = await browser.newPage({ viewport: { width: size, height: size } });
   await page.setContent(
-    `<body style="margin:0;background:#FAF6EE;display:grid;place-items:center;height:100vh">
+    `<body style="margin:0;background:#F3E4CF;display:grid;place-items:center;height:100vh">
        <div style="width:${size * scale}px;height:${size * scale}px">${svg}</div>
      </body>`,
   );

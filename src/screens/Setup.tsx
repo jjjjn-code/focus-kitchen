@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MAX_TARGET_MIN, MIN_TARGET_MIN, TARGET_PRESETS, TARGET_STEP_MIN, type Settings } from '../types';
+import { FOOD_STAGES, stageIndexFor } from './FoodArt';
 import TimeScrubber from './TimeScrubber';
 
 interface Props {
@@ -23,16 +24,33 @@ export default function Setup({ settings, onBack, onStart }: Props) {
   const [targetMin, setTargetMin] = useState(() => clampTarget(settings.lastTargetMin));
   const hours = Math.floor(targetMin / 60);
   const mins = targetMin % 60;
+  const stage = stageIndexFor(targetMin);
 
   return (
-    <main className="page">
-      <button className="back" onClick={onBack} aria-label="Back">
-        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
+    <main className="setup">
+      {/* The longer the session, the more elaborate the food. */}
+      <div className="setup__stage" style={{ backgroundColor: FOOD_STAGES[stage].colour }}>
+        <button className="back" onClick={onBack} aria-label="Back">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <div
+          className="setup__foods"
+          style={{ '--stage': stage } as React.CSSProperties}
+          role="img"
+          aria-label={FOOD_STAGES[stage].label}
+          data-testid="food-stage"
+        >
+          {FOOD_STAGES.map((s, i) => (
+            <div key={s.fromMin} className={`setup__food${i === stage ? ' is-active' : ''}`} aria-hidden="true">
+              {s.art}
+            </div>
+          ))}
+        </div>
+      </div>
 
-      <section className="target">
+      <section className="setup__panel">
         <p className="target__readout" data-testid="target-readout">
           {hours > 0 && (
             <>
@@ -64,11 +82,10 @@ export default function Setup({ settings, onBack, onStart }: Props) {
             </button>
           ))}
         </div>
+        <button className="button button--primary button--big" onClick={() => onStart(targetMin)}>
+          Start
+        </button>
       </section>
-
-      <button className="button button--primary button--big" onClick={() => onStart(targetMin)}>
-        Start
-      </button>
     </main>
   );
 }

@@ -3,13 +3,14 @@ import { DISHES } from '../data/dishes';
 import { dishWeights, rollDish } from './roll';
 
 const none = new Set<string>();
-const weightOf = (tier: 1 | 2 | 3 | 4 | 5, id: string, cooked = none) =>
+const weightOf = (tier: 0 | 1 | 2 | 3 | 4 | 5, id: string, cooked = none) =>
   dishWeights(tier, cooked).find((w) => w.dish.id === id)!.weight;
 
 describe('menu', () => {
-  it('has 20 dishes with unique ids, four per tier', () => {
-    expect(DISHES).toHaveLength(20);
-    expect(new Set(DISHES.map((d) => d.id)).size).toBe(20);
+  it('has 23 dishes with unique ids: three nibbles and four in every other tier', () => {
+    expect(DISHES).toHaveLength(23);
+    expect(new Set(DISHES.map((d) => d.id)).size).toBe(23);
+    expect(DISHES.filter((d) => d.tier === 0)).toHaveLength(3);
     for (const tier of [1, 2, 3, 4, 5]) {
       expect(DISHES.filter((d) => d.tier === tier)).toHaveLength(4);
     }
