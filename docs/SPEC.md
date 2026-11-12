@@ -164,6 +164,12 @@ interface Settings {
 
 The collection, counts, streaks and stats are all derived from sessions. Only one session may be `active` at a time.
 
+Implementation notes added in M1:
+
+- The one `active` session is kept in `localStorage`, not IndexedDB, because the write is synchronous and so `hiddenAt` is safely stored before iOS suspends the page. It moves to IndexedDB when the session ends.
+- `Session` also has `lastSeenAt` (a heartbeat written every 5 seconds while visible) and `leftKitchen`. If the page is killed without warning, the last heartbeat stands in for `hiddenAt`, so the focused minutes stay accurate.
+- `Settings` also has `lastActivity`, remembered like `lastTargetMin`.
+
 Home Screen PWAs on iOS are not subject to Safari's 7-day storage eviction, but keep the JSON export as a backup anyway.
 
 ## 7. Messages on the reveal screen
